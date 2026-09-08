@@ -71,10 +71,11 @@ backend/
     │   ├── auth.routes.ts
     │   ├── telemetry.routes.ts
     │   ├── dashboard.routes.ts
-    │   ├── vehicle.routes.ts
-    │   └── alerts.routes.ts
+    │   └── vehicle.routes.ts
     ├── services/
     │   ├── session.service.ts
+    │   ├── status.ts
+    │   ├── evolution.ts
     │   ├── telemetry.service.ts
     │   ├── analytics.service.ts
     │   └── alert.service.ts
@@ -84,7 +85,8 @@ backend/
     │   ├── auth.middleware.ts
     │   └── error.middleware.ts
     └── data/
-        └── seed.ts
+        ├── seed.ts
+        └── backfill.ts
 ```
 
 ## Data Strategy
@@ -134,8 +136,9 @@ Vehicles:
 - GET /api/vehicles
 - GET /api/vehicles/:id
 
-Alerts:
-- GET /api/alerts
+The Alerts page polls `/api/dashboard/alerts`. A separate `/api/alerts` was
+considered and dropped - it would return identical derived data with no
+distinct caller.
 
 ## Key Decisions
 
@@ -165,6 +168,20 @@ any given vehicle changes about once every three minutes and the fleet appears f
 
 Decision: evolve a small batch (approximately 3-5 vehicles) per tick and emit one
 telemetry event per updated vehicle.
+
+### History is backfilled at boot
+
+The generator updates a few vehicles per tick, so a given vehicle is touched
+roughly once a minute. Starting from an empty history means vehicle detail
+charts are empty and trend buckets unpopulated for the first several minutes -
+the application looks broken exactly when someone first opens it.
+
+Decision: at startup, walk every vehicle forward through the recent past using
+the same evolution rules the live generator uses, and seed that as history. The
+final step becomes the vehicle's current state, so nothing is inconsistent.
+
+The evolution logic lives in `services/evolution.ts` precisely so the backfill
+and the live generator cannot drift apart.
 
 ### Fuel level recovers
 

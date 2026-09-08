@@ -1,10 +1,10 @@
 import { env } from '../config/index.js'
-import { createFleet } from '../data/index.js'
+import { createBackfill, createFleet } from '../data/index.js'
 import type { TelemetryEvent, Vehicle } from '../types/index.js'
 import { toMillis } from '../utils/index.js'
 
 const fleet = createFleet()
-const history: TelemetryEvent[] = []
+const history: TelemetryEvent[] = createBackfill(fleet)
 
 export function getVehicles() {
   return Array.from(fleet.values())

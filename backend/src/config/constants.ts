@@ -31,6 +31,10 @@ export const VEHICLES_PER_TICK = 4
 export const REFUEL_FLOOR = 6
 export const REFUEL_RANGE = { min: 85, max: 100 } as const
 
+// Boot backfill: enough points to fill every trend bucket on first load.
+export const BACKFILL_POINTS = 20
+export const BACKFILL_INTERVAL_MS = 30_000
+
 export const SUMMARY_WINDOW_SECONDS = 60
 export const TREND_BUCKET_SECONDS = 30
 export const TREND_BUCKET_COUNT = 20

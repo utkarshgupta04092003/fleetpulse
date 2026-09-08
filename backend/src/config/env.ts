@@ -10,7 +10,7 @@ const envSchema = z.object({
   DEMO_EMAIL: z.string().email().default('demo@fleetpulse.com'),
   DEMO_PASSWORD: z.string().min(1).default('password123'),
   TELEMETRY_INTERVAL_MS: z.coerce.number().int().positive().default(2000),
-  HISTORY_LIMIT: z.coerce.number().int().positive().default(800),
+  HISTORY_LIMIT: z.coerce.number().int().positive().default(3000),
 })
 
 const parsed = envSchema.safeParse(process.env)

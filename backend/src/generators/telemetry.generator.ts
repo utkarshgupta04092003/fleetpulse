@@ -1,20 +1,14 @@
+import { VEHICLES_PER_TICK, env } from '../config/index.js'
 import {
-  DEFAULT_THRESHOLDS,
-  METRIC_BOUNDS,
-  REFUEL_FLOOR,
-  REFUEL_RANGE,
-  VEHICLES_PER_TICK,
-  env,
-} from '../config/index.js'
-import { addEvent, deriveStatus, getVehicles, updateVehicle } from '../services/index.js'
-import type {
-  TelemetryEvent,
-  TelemetryEventType,
-  Vehicle,
-  VehicleMetrics,
-  VehicleStatus,
-} from '../types/index.js'
-import { clamp, now, randomBetween, randomChance, randomItem, round1 } from '../utils/index.js'
+  addEvent,
+  deriveStatus,
+  evolveMetrics,
+  getVehicles,
+  pickEventType,
+  updateVehicle,
+} from '../services/index.js'
+import type { TelemetryEvent, Vehicle } from '../types/index.js'
+import { now, randomItem } from '../utils/index.js'
 
 type Listener = (event: TelemetryEvent) => void
 
@@ -56,34 +50,7 @@ function tick() {
 }
 
 function evolve(vehicle: Vehicle): TelemetryEvent {
-  const refuelled = vehicle.fuelLevel <= REFUEL_FLOOR
-
-  // Parked vehicles mostly stay parked, otherwise they never settle.
-  const drifted =
-    vehicle.speed < 1 && randomChance(0.7) ? 0 : vehicle.speed + randomBetween(-8, 8)
-
-  const speed = clamp(drifted, METRIC_BOUNDS.speed.min, METRIC_BOUNDS.speed.max)
-
-  const metrics: VehicleMetrics = {
-    speed: round1(speed),
-    temperature: round1(
-      clamp(
-        50 + speed * 0.35 + randomBetween(-3, 3),
-        METRIC_BOUNDS.temperature.min,
-        METRIC_BOUNDS.temperature.max,
-      ),
-    ),
-    fuelLevel: round1(
-      refuelled
-        ? randomBetween(REFUEL_RANGE.min, REFUEL_RANGE.max)
-        : clamp(
-            vehicle.fuelLevel - randomBetween(0.05, 0.4),
-            METRIC_BOUNDS.fuelLevel.min,
-            METRIC_BOUNDS.fuelLevel.max,
-          ),
-    ),
-  }
-
+  const { metrics, refuelled } = evolveMetrics(vehicle)
   const status = deriveStatus(metrics)
   const timestamp = now()
 
@@ -99,21 +66,4 @@ function evolve(vehicle: Vehicle): TelemetryEvent {
 
   addEvent(event)
   return event
-}
-
-function pickEventType(
-  metrics: VehicleMetrics,
-  status: VehicleStatus,
-  previousStatus: VehicleStatus,
-  refuelled: boolean,
-): TelemetryEventType {
-  if (refuelled) return 'RECOVERY'
-  if (metrics.temperature >= DEFAULT_THRESHOLDS.temperatureWarning) return 'TEMPERATURE_ALERT'
-  if (metrics.speed >= DEFAULT_THRESHOLDS.speed) return 'SPEED_ALERT'
-  if (metrics.fuelLevel <= DEFAULT_THRESHOLDS.fuelWarning) return 'LOW_FUEL'
-
-  const wasUnhealthy = previousStatus === 'WARNING' || previousStatus === 'CRITICAL'
-  if (wasUnhealthy && status !== 'WARNING' && status !== 'CRITICAL') return 'RECOVERY'
-
-  return 'UPDATE'
 }

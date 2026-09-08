@@ -1,5 +1,6 @@
 export * from './session.service.js'
 export * from './status.js'
+export * from './evolution.js'
 export * from './telemetry.service.js'
 export * from './analytics.service.js'
 export * from './alert.service.js'
