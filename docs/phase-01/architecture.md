@@ -153,8 +153,11 @@ copy as canonical. The tradeoff is documented in the README.
 
 ### Route protection is enforced server-side
 
-Next.js middleware cannot validate the session, because session records live in the
-Express process memory rather than in a signed token the edge runtime can verify.
+Next.js 16 renamed middleware to `proxy` and runs it on the Node runtime, so it
+*could* call the backend to validate a session. It still should not: sessions live
+in the Express process memory, so every navigation would cost a server-to-server
+round trip purely to re-check something the API already checks on the request that
+follows it.
 
 Decision: the backend `auth.middleware.ts` is the real enforcement point. The frontend
 protected layout performs a `GET /api/auth/session` check on mount purely for user
