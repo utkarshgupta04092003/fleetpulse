@@ -169,8 +169,14 @@ Start with:
 1. `docs/00-project-brief.md`
 2. `docs/phase-01/requirements.md`
 3. `docs/phase-01/architecture.md`
+4. `docs/phase-01/runtime.md`
+5. `docs/phase-01/traceability.md`
 
 Then proceed sequentially through Phase 07.
+
+`docs/phase-01/runtime.md` is the source of truth for ports, environment variables and
+the session cookie. `docs/phase-01/traceability.md` maps each requirement to the code
+that satisfies it and the check that proves it.
 
 ## Assignment Mapping
 

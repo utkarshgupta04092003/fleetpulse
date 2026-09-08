@@ -63,21 +63,28 @@ Suggested structure:
 backend/
 └── src/
     ├── server.ts
+    ├── config/
+    │   └── env.ts
+    ├── types/
+    │   └── index.ts
     ├── routes/
     │   ├── auth.routes.ts
+    │   ├── telemetry.routes.ts
     │   ├── dashboard.routes.ts
     │   ├── vehicle.routes.ts
     │   └── alerts.routes.ts
     ├── services/
+    │   ├── session.service.ts
     │   ├── telemetry.service.ts
     │   ├── analytics.service.ts
     │   └── alert.service.ts
     ├── generators/
     │   └── telemetry.generator.ts
     ├── middleware/
-    │   └── auth.middleware.ts
+    │   ├── auth.middleware.ts
+    │   └── error.middleware.ts
     └── data/
-        └── vehicles.ts
+        └── seed.ts
 ```
 
 ## Data Strategy
@@ -104,6 +111,12 @@ SSE provides:
 
 ## API Boundaries
 
+Health:
+- GET /health
+
+The health check sits outside `/api` and outside authentication so the server can be
+probed before a session exists.
+
 Authentication:
 - POST /api/auth/login
 - POST /api/auth/logout
@@ -123,6 +136,42 @@ Vehicles:
 
 Alerts:
 - GET /api/alerts
+
+## Key Decisions
+
+### Shared types are duplicated, not packaged
+
+`Vehicle`, `TelemetryEvent` and `Alert` are needed by both applications. A shared
+workspace package would avoid the duplication but introduces monorepo tooling that the
+split frontend/backend structure does not otherwise need.
+
+Decision: keep an identical `types/index.ts` in each application and treat the backend
+copy as canonical. The tradeoff is documented in the README.
+
+### Route protection is enforced server-side
+
+Next.js middleware cannot validate the session, because session records live in the
+Express process memory rather than in a signed token the edge runtime can verify.
+
+Decision: the backend `auth.middleware.ts` is the real enforcement point. The frontend
+protected layout performs a `GET /api/auth/session` check on mount purely for user
+experience - it prevents a protected shell from flashing before the redirect. Frontend
+guarding alone is never treated as security.
+
+### The generator updates a batch of vehicles per tick
+
+With roughly 100 vehicles and a 2 second tick, updating a single vehicle per tick means
+any given vehicle changes about once every three minutes and the fleet appears frozen.
+
+Decision: evolve a small batch (approximately 3-5 vehicles) per tick and emit one
+telemetry event per updated vehicle.
+
+### Fuel level recovers
+
+Fuel decreases monotonically, so an unbounded simulation drains the entire fleet to zero.
+
+Decision: when fuel falls below a floor, refuel the vehicle and emit a `RECOVERY` event.
+This keeps the dataset realistic across a long-running demo.
 
 ## Error Handling
 

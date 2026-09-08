@@ -2,15 +2,17 @@
 
 ## Status
 
-Planning/documentation phase.
+Phase 01 complete. Application implementation has not started.
 
-The repository currently contains the project documentation structure. Application implementation has not started yet.
+Phase 01 closed three gaps in the original documentation: theming and domain coherence
+had no functional requirement, the runtime contract (ports, environment variables,
+CORS, cookie) was unspecified, and no requirement-to-artifact traceability existed.
 
 ## Phase Checklist
 
 | Phase | Status | Goal |
 |---|---|---|
-| Phase 01 | Planned | Architecture and requirements |
+| Phase 01 | Complete | Architecture and requirements |
 | Phase 02 | Planned | Backend and dummy data |
 | Phase 03 | Planned | Authentication |
 | Phase 04 | Planned | SSE and periodic APIs |
@@ -40,6 +42,17 @@ The repository currently contains the project documentation structure. Applicati
 - [ ] Details drawer/modal
 - [ ] Animation/micro-interactions
 - [ ] Final validation
+
+## Phase 01 Deliverables
+
+- `docs/phase-01/requirements.md` - FR-01..FR-13 plus a PDF coverage table
+- `docs/phase-01/traceability.md` - requirement -> backend / frontend / validation
+- `docs/phase-01/runtime.md` - ports, env vars, CORS, session cookie, commands
+- `docs/phase-01/architecture.md` - health endpoint, key decisions, updated structure
+- Repo hygiene - `.gitignore`, `.editorconfig`, `.nvmrc`, `.prettierrc`, `.prettierignore`
+
+Deferred to Phase 02: application scaffolds and ESLint configuration, which require
+`package.json` to exist.
 
 ## Definition of Done
 
