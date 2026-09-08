@@ -1,5 +1,7 @@
 import type { AlertThresholds } from '../types/index.js'
 
+export const SESSION_COOKIE = 'fp_session'
+
 export const FLEET_SIZE = 100
 
 export const METRIC_BOUNDS = {
