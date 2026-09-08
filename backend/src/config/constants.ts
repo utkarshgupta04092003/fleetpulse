@@ -2,6 +2,11 @@ import type { AlertThresholds } from '../types/index.js'
 
 export const SESSION_COOKIE = 'fp_session'
 
+// Keeps idle proxies from closing the stream.
+export const SSE_HEARTBEAT_MS = 15_000
+
+export const VEHICLE_HISTORY_LIMIT = 30
+
 export const FLEET_SIZE = 100
 
 export const METRIC_BOUNDS = {
