@@ -1,0 +1,32 @@
+#!/bin/sh
+# Enable with: git config core.hooksPath .githooks
+set -e
+
+root=$(git rev-parse --show-toplevel)
+apps='backend frontend'
+
+# Runs one npm script across every scaffolded app, or aborts the commit.
+check() {
+  script=$1
+  label=$2
+
+  echo "Checking $label..."
+
+  for app in $apps; do
+    [ -f "$root/$app/package.json" ] || continue
+
+    if ! (cd "$root/$app" && npm run "$script" --if-present --silent); then
+      echo "$label failed in $app."
+      exit 1
+    fi
+  done
+
+  echo "$label passed."
+}
+
+check lint      'ESLint standards'
+check typecheck 'TypeScript standards'
+check test      'Tests'
+check build     'Build'
+
+echo 'All checks passed, now committing...'
