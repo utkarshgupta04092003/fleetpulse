@@ -40,10 +40,13 @@ export const useTelemetryStore = create<TelemetryState>((set) => ({
   reset: () => set(initial),
 }))
 
-// Live fleet averages computed from whatever the stream has delivered so far.
-// Distinct from the polled summary, which the backend aggregates over a window.
-export function selectLiveMetrics(state: TelemetryState) {
-  const events = Object.values(state.latestByVehicle)
+type LatestByVehicle = Record<string, TelemetryEvent>
+
+// Plain functions over the raw slice, not zustand selectors. A selector that
+// builds a new object every call breaks useSyncExternalStore's snapshot
+// caching and re-renders forever - components memoise these instead.
+export function computeLiveMetrics(latestByVehicle: LatestByVehicle) {
+  const events = Object.values(latestByVehicle)
 
   if (events.length === 0) {
     return { speed: 0, temperature: 0, fuelLevel: 0, vehicles: 0 }
@@ -68,7 +71,7 @@ export function selectLiveMetrics(state: TelemetryState) {
   }
 }
 
-export function selectStatusCounts(state: TelemetryState) {
+export function computeStatusCounts(latestByVehicle: LatestByVehicle) {
   const counts: Record<VehicleStatus, number> = {
     ACTIVE: 0,
     IDLE: 0,
@@ -76,7 +79,7 @@ export function selectStatusCounts(state: TelemetryState) {
     CRITICAL: 0,
   }
 
-  for (const event of Object.values(state.latestByVehicle)) {
+  for (const event of Object.values(latestByVehicle)) {
     counts[event.status]++
   }
 

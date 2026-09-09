@@ -18,6 +18,11 @@ type AuthState = {
   clearError: () => void
 }
 
+// Both the auth guard and the login page ask who the user is, and React runs
+// effects twice in development. Sharing one in-flight promise means one request
+// instead of four.
+let inFlight: Promise<void> | null = null
+
 export const useAuthStore = create<AuthState>((set) => ({
   user: null,
   status: 'checking',
@@ -49,12 +54,21 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   checkSession: async () => {
-    try {
-      const { user } = await authApi.session()
-      set({ user, status: 'authenticated' })
-    } catch {
-      set({ user: null, status: 'unauthenticated' })
-    }
+    if (inFlight) return inFlight
+
+    inFlight = authApi
+      .session()
+      .then(({ user }) => {
+        set({ user, status: 'authenticated' })
+      })
+      .catch(() => {
+        set({ user: null, status: 'unauthenticated' })
+      })
+      .finally(() => {
+        inFlight = null
+      })
+
+    return inFlight
   },
 
   markExpired: () => set({ user: null, status: 'unauthenticated', expired: true }),
