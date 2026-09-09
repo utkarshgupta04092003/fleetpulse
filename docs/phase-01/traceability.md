@@ -12,6 +12,9 @@ when its validation step passes in the running application.
 - **Validation** - the observable check performed in the running app
 - **Built** - `todo` / `partial` / `done`
 
+All requirements are `done` and were verified in a browser against the running
+application. Measured results are recorded in `docs/phase-07/validation.md`.
+
 ## Matrix
 
 ### FR-01 Realtime telemetry
@@ -21,7 +24,7 @@ when its validation step passes in the running application.
 | Backend | `generators/telemetry.generator.ts`, `routes/telemetry.routes.ts` -> `GET /api/telemetry/stream` |
 | Frontend | `lib/telemetry.ts` (EventSource), `stores/telemetry.store.ts`, Dashboard |
 | Validation | Open Dashboard, do not refresh, confirm values change within ~5s |
-| Built | todo |
+| Built | done |
 
 ### FR-02 Live metrics
 
@@ -30,7 +33,7 @@ when its validation step passes in the running application.
 | Backend | `telemetry.generator.ts` metric evolution |
 | Frontend | `components/dashboard/MetricCard.tsx` x3 (speed, temperature, fuel) |
 | Validation | Watch all three cards change over a 30s window |
-| Built | todo |
+| Built | done |
 
 ### FR-03 Live state
 
@@ -39,7 +42,7 @@ when its validation step passes in the running application.
 | Backend | `TelemetryEvent.status`, `.eventType`, `.timestamp` |
 | Frontend | `components/dashboard/LiveIndicator.tsx`, recent-events feed |
 | Validation | LIVE badge visible; last-received timestamp ticks forward; events show status and type |
-| Built | todo |
+| Built | done |
 
 ### FR-04 Periodic analytics
 
@@ -48,7 +51,7 @@ when its validation step passes in the running application.
 | Backend | `routes/dashboard.routes.ts` |
 | Frontend | polling in `components/providers/AppProviders.tsx`, `stores/dashboard.store.ts` |
 | Validation | Network tab shows a request every 10s by default; "Last updated" timestamp advances |
-| Built | todo |
+| Built | done |
 
 ### FR-05 Periodic endpoints
 
@@ -57,7 +60,7 @@ when its validation step passes in the running application.
 | Backend | `services/analytics.service.ts`, `services/alert.service.ts` -> `/summary`, `/alerts`, `/trends` |
 | Frontend | Analytics page, Alerts page |
 | Validation | Compare an SSE payload against a `/summary` payload - aggregates and deltas vs a single raw event |
-| Built | todo |
+| Built | done |
 
 ### FR-06 Authentication
 
@@ -66,7 +69,7 @@ when its validation step passes in the running application.
 | Backend | `routes/auth.routes.ts`, `middleware/auth.middleware.ts` |
 | Frontend | `app/login/page.tsx`, `stores/auth.store.ts`, protected layout guard |
 | Validation | Visit `/dashboard` logged out -> redirected to `/login`; curl a protected API with no cookie -> 401 |
-| Built | todo |
+| Built | done |
 
 ### FR-07 Session invalidation
 
@@ -75,7 +78,7 @@ when its validation step passes in the running application.
 | Backend | session TTL expiry -> 401 |
 | Frontend | central 401 handler in `lib/api.ts` |
 | Validation | Delete the session cookie mid-session, wait for the next poll -> state clears and redirects to Login |
-| Built | todo |
+| Built | done |
 
 ### FR-08 Logout
 
@@ -84,7 +87,7 @@ when its validation step passes in the running application.
 | Backend | `POST /api/auth/logout` |
 | Frontend | Settings page logout control |
 | Validation | Log out -> redirected to Login; EventSource closed; back button does not show protected data |
-| Built | todo |
+| Built | done |
 
 ### FR-09 Pages
 
@@ -93,7 +96,7 @@ when its validation step passes in the running application.
 | Backend | n/a |
 | Frontend | `login`, `dashboard`, `analytics`, `vehicles`, `alerts`, `settings` |
 | Validation | Navigate all six; each shows fleet-domain content, not placeholders |
-| Built | todo |
+| Built | done |
 
 ### FR-10 Interactivity
 
@@ -102,7 +105,7 @@ when its validation step passes in the running application.
 | Backend | `?tempThreshold=` on `/api/dashboard/alerts` |
 | Frontend | `useTableControls` hook, Sheet drawers, pause/resume, threshold slider |
 | Validation | Search filters rows; a row click opens a drawer; pause freezes metrics; threshold changes the alert list |
-| Built | todo |
+| Built | done |
 
 ### FR-11 Theming consistency
 
@@ -111,7 +114,7 @@ when its validation step passes in the running application.
 | Backend | n/a |
 | Frontend | Tailwind theme tokens, shadcn theme config, shared layout |
 | Validation | Login, Dashboard and Settings share palette; no unthemed default components; contrast readable |
-| Built | todo |
+| Built | done |
 
 ### FR-12 Domain coherence
 
@@ -120,7 +123,7 @@ when its validation step passes in the running application.
 | Backend | seed data, `types/index.ts` |
 | Frontend | all page headings and labels |
 | Validation | No generic labels ("Item", "Value", "Data"); the same entity keeps the same name everywhere |
-| Built | todo |
+| Built | done |
 
 ### FR-13 Backend dummy data generation
 
@@ -129,7 +132,7 @@ when its validation step passes in the running application.
 | Backend | `data/seed.ts`, `telemetry.generator.ts`, analytics/alert services |
 | Frontend | none - the frontend must not fabricate domain data |
 | Validation | Grep the frontend for hardcoded vehicle/alert arrays; the only source is the API |
-| Built | todo |
+| Built | done |
 
 ## Interaction Category Coverage
 

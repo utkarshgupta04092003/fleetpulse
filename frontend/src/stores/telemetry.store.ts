@@ -1,14 +1,16 @@
-import { create } from 'zustand'
 import { RECENT_EVENTS_LIMIT } from '@/config'
 import type { TelemetryEvent, VehicleStatus } from '@/types'
+import { create } from 'zustand'
 
 export type ConnectionState = 'connecting' | 'live' | 'reconnecting' | 'paused'
+
+export type ReceivedEvent = TelemetryEvent & { seq: number }
 
 type TelemetryState = {
   connection: ConnectionState
   lastReceivedAt: string | null
   eventCount: number
-  recentEvents: TelemetryEvent[]
+  recentEvents: ReceivedEvent[]
   latestByVehicle: Record<string, TelemetryEvent>
   applyEvent: (event: TelemetryEvent) => void
   setConnection: (connection: ConnectionState) => void
@@ -19,7 +21,7 @@ const initial = {
   connection: 'connecting' as ConnectionState,
   lastReceivedAt: null,
   eventCount: 0,
-  recentEvents: [] as TelemetryEvent[],
+  recentEvents: [] as ReceivedEvent[],
   latestByVehicle: {} as Record<string, TelemetryEvent>,
 }
 
@@ -27,13 +29,17 @@ export const useTelemetryStore = create<TelemetryState>((set) => ({
   ...initial,
 
   applyEvent: (event) =>
-    set((state) => ({
-      connection: state.connection === 'paused' ? 'paused' : 'live',
-      lastReceivedAt: event.timestamp,
-      eventCount: state.eventCount + 1,
-      recentEvents: [event, ...state.recentEvents].slice(0, RECENT_EVENTS_LIMIT),
-      latestByVehicle: { ...state.latestByVehicle, [event.vehicleId]: event },
-    })),
+    set((state) => {
+      const seq = state.eventCount + 1
+
+      return {
+        connection: state.connection === 'paused' ? 'paused' : 'live',
+        lastReceivedAt: event.timestamp,
+        eventCount: seq,
+        recentEvents: [{ ...event, seq }, ...state.recentEvents].slice(0, RECENT_EVENTS_LIMIT),
+        latestByVehicle: { ...state.latestByVehicle, [event.vehicleId]: event },
+      }
+    }),
 
   setConnection: (connection) => set({ connection }),
 
@@ -42,9 +48,6 @@ export const useTelemetryStore = create<TelemetryState>((set) => ({
 
 type LatestByVehicle = Record<string, TelemetryEvent>
 
-// Plain functions over the raw slice, not zustand selectors. A selector that
-// builds a new object every call breaks useSyncExternalStore's snapshot
-// caching and re-renders forever - components memoise these instead.
 export function computeLiveMetrics(latestByVehicle: LatestByVehicle) {
   const events = Object.values(latestByVehicle)
 

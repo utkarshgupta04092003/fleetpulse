@@ -39,14 +39,25 @@ export function stopGenerator() {
 }
 
 function tick() {
-  const vehicles = getVehicles()
-
-  for (let i = 0; i < VEHICLES_PER_TICK; i++) {
-    const event = evolve(randomItem(vehicles))
+  for (const vehicle of pickDistinct(getVehicles(), VEHICLES_PER_TICK)) {
+    const event = evolve(vehicle)
     for (const listener of listeners) {
       listener(event)
     }
   }
+}
+
+function pickDistinct(vehicles: Vehicle[], count: number) {
+  const chosen = new Map<string, Vehicle>()
+  let attempts = 0
+
+  while (chosen.size < Math.min(count, vehicles.length) && attempts < count * 10) {
+    const vehicle = randomItem(vehicles)
+    chosen.set(vehicle.id, vehicle)
+    attempts++
+  }
+
+  return chosen.values()
 }
 
 function evolve(vehicle: Vehicle): TelemetryEvent {

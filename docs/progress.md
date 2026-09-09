@@ -2,46 +2,45 @@
 
 ## Status
 
-Phase 01 complete. Application implementation has not started.
-
-Phase 01 closed three gaps in the original documentation: theming and domain coherence
-had no functional requirement, the runtime contract (ports, environment variables,
-CORS, cookie) was unspecified, and no requirement-to-artifact traceability existed.
+All seven phases complete. The application runs end to end and every assignment
+requirement has been verified in a browser against the running system.
 
 ## Phase Checklist
 
 | Phase | Status | Goal |
 |---|---|---|
 | Phase 01 | Complete | Architecture and requirements |
-| Phase 02 | Planned | Backend and dummy data |
-| Phase 03 | Planned | Authentication |
-| Phase 04 | Planned | SSE and periodic APIs |
-| Phase 05 | Planned | Frontend and six pages |
-| Phase 06 | Planned | Interactions and UX |
-| Phase 07 | Planned | Testing, polish and submission |
+| Phase 02 | Complete | Backend and dummy data |
+| Phase 03 | Complete | Authentication |
+| Phase 04 | Complete | SSE and periodic APIs |
+| Phase 05 | Complete | Frontend and six pages |
+| Phase 06 | Complete | Interactions and UX |
+| Phase 07 | Complete | Testing, polish and submission |
 
 ## Assignment Coverage
 
-- [ ] Realtime SSE data
-- [ ] 3+ live numeric metrics
-- [ ] LIVE indicator
-- [ ] Last received timestamp
-- [ ] Periodic API polling
-- [ ] 2+ aggregated/derived endpoints
-- [ ] Last updated timestamp
-- [ ] Consistent theme
-- [ ] Login
-- [ ] Protected route
-- [ ] Invalid/expired session handling
-- [ ] Logout
-- [ ] Six meaningful pages
-- [ ] Coherent fleet domain
-- [ ] Search/filter/sort
-- [ ] Pause/resume
-- [ ] Threshold control
-- [ ] Details drawer/modal
-- [ ] Animation/micro-interactions
-- [ ] Final validation
+Each item was verified in a browser against the running application.
+
+- [x] Realtime SSE data - 4 events per 2s tick
+- [x] 3+ live numeric metrics - speed, temperature, fuel
+- [x] LIVE indicator - LIVE / PAUSED / RECONNECTING
+- [x] Last received timestamp - header and dashboard
+- [x] Periodic API polling - 5/10/15s, default 10s
+- [x] 2+ aggregated/derived endpoints - summary, alerts, trends
+- [x] Last updated timestamp - dashboard and analytics
+- [x] Consistent theme - one dark palette across all pages
+- [x] Login - demo credentials, cookie session
+- [x] Protected route - all five pages plus server-side API guard
+- [x] Invalid/expired session handling - 401 clears state, redirects, message shown
+- [x] Logout - session destroyed, cookie cleared, stream closed
+- [x] Six meaningful pages
+- [x] Coherent fleet domain
+- [x] Search/filter/sort - vehicles and alerts
+- [x] Pause/resume - freezes metrics, connection stays open
+- [x] Threshold control - backend re-derives alerts
+- [x] Details drawer/modal - vehicle and alert
+- [x] Animation/micro-interactions - transitions, metric changes, LIVE pulse
+- [x] Final validation - lint, typecheck and build pass for both applications
 
 ## Phase 01 Deliverables
 

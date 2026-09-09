@@ -127,13 +127,13 @@ export default function DashboardPage() {
                 <AnimatePresence initial={false}>
                   {recentEvents.slice(0, 10).map((event) => (
                     <motion.li
-                      key={`${event.vehicleId}-${event.timestamp}`}
+                      key={event.seq}
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ duration: 0.2 }}
-                      className="flex items-center justify-between gap-3 py-2 text-sm"
+                      className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 py-2 text-sm"
                     >
-                      <div className="flex min-w-0 items-center gap-3">
+                      <div className="flex min-w-0 flex-1 items-center gap-3">
                         <span className="font-mono text-xs text-muted-foreground">
                           {formatTime(event.timestamp)}
                         </span>
@@ -145,7 +145,7 @@ export default function DashboardPage() {
                         </span>
                       </div>
 
-                      <div className="flex shrink-0 items-center gap-3 text-xs tabular text-muted-foreground">
+                      <div className="flex items-center gap-3 text-xs tabular text-muted-foreground">
                         <span>{event.speed} km/h</span>
                         <span>{event.temperature} C</span>
                         <span>{event.fuelLevel}%</span>
