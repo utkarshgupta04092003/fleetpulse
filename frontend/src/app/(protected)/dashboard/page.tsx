@@ -94,16 +94,8 @@ export default function DashboardPage() {
               tone="success"
               hint={`${summary.idleVehicles} idle`}
             />
-            <MetricCard
-              label="Warning"
-              value={summary.warningVehicles}
-              tone="warning"
-            />
-            <MetricCard
-              label="Critical"
-              value={summary.criticalVehicles}
-              tone="critical"
-            />
+            <MetricCard label="Warning" value={summary.warningVehicles} tone="warning" />
+            <MetricCard label="Critical" value={summary.criticalVehicles} tone="critical" />
           </div>
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">

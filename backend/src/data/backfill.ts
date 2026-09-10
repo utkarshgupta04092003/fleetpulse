@@ -1,6 +1,4 @@
 import { BACKFILL_INTERVAL_MS, BACKFILL_POINTS } from '../config/index.js'
-// Imported directly, not via the services barrel: that barrel re-exports
-// telemetry.service, which imports this file back.
 import { evolveMetrics, pickEventType } from '../services/evolution.js'
 import { deriveStatus } from '../services/status.js'
 import type { TelemetryEvent, Vehicle } from '../types/index.js'

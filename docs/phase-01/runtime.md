@@ -26,7 +26,7 @@ Both run on `localhost`, so browser cookies are same-site despite the differing 
 | `DEMO_EMAIL` | `demo@fleetpulse.com` | Demo account identity |
 | `DEMO_PASSWORD` | `password123` | Demo account secret |
 | `TELEMETRY_INTERVAL_MS` | `2000` | Generator tick interval |
-| `HISTORY_LIMIT` | `800` | Retained telemetry events |
+| `HISTORY_LIMIT` | `3000` | Retained telemetry events |
 
 `DEMO_EMAIL` and `DEMO_PASSWORD` are read from the environment with the documented
 values as fallbacks. This satisfies the rule against hardcoded secrets while keeping
