@@ -32,7 +32,7 @@ router.post('/login', (req, res) => {
 
   res.cookie(SESSION_COOKIE, session.id, {
     httpOnly: true,
-    sameSite: 'lax',
+    sameSite: isProduction ? 'none' : 'lax',
     secure: isProduction,
     path: '/',
     maxAge: env.SESSION_TTL_MINUTES * 60_000,
@@ -47,7 +47,11 @@ router.get('/session', requireAuth, (req, res) => {
 
 router.post('/logout', (req, res) => {
   destroySession(req.cookies?.[SESSION_COOKIE])
-  res.clearCookie(SESSION_COOKIE, { path: '/' })
+  res.clearCookie(SESSION_COOKIE, {
+    path: '/',
+    sameSite: isProduction ? 'none' : 'lax',
+    secure: isProduction,
+  })
   res.status(204).end()
 })
 

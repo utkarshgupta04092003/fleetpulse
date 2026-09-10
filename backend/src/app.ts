@@ -14,6 +14,8 @@ import {
 export function createApp() {
   const app = express()
 
+  app.set('trust proxy', 1)
+
   // credentials must be enabled or the session cookie is never sent.
   app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }))
   app.use(express.json())
