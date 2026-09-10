@@ -3,7 +3,13 @@ import cors from 'cors'
 import express from 'express'
 import { env } from './config/index.js'
 import { errorHandler, notFound } from './middleware/index.js'
-import { authRoutes, dashboardRoutes, telemetryRoutes, vehicleRoutes } from './routes/index.js'
+import {
+  authRoutes,
+  dashboardRoutes,
+  docsRoutes,
+  telemetryRoutes,
+  vehicleRoutes,
+} from './routes/index.js'
 
 export function createApp() {
   const app = express()
@@ -12,6 +18,8 @@ export function createApp() {
   app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }))
   app.use(express.json())
   app.use(cookieParser())
+
+  app.use('/', docsRoutes)
 
   app.get('/health', (_req, res) => {
     res.json({ status: 'ok', uptime: Math.round(process.uptime()) })
